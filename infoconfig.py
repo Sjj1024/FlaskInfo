@@ -1,8 +1,8 @@
 from redis import StrictRedis
 
+
 class Config(object):
     SECRET_KEY = "asdadfafadfasdfa"
-    DEBUG = True
     SQLALCHEMY_DATABASE_URI = "mysql://root:mysql/127.0.0.1:3306/fnews"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # 配置redis的地址：
@@ -18,3 +18,26 @@ class Config(object):
     SESSION_PERMANENT = False
     # 这是过期时间
     PERMANENT_SESSION_LIFETIME = 86400 * 2
+
+
+class Development(Config):
+    """开发环境下的配置"""
+    DEBUG = True
+
+
+class Production(Config):
+    """z生产环境下的配置"""
+    DEBUG = False
+
+
+class Testing(Config):
+    """测试环境下的配置"""
+    DEBUG = True
+    TESTING = True
+
+
+config = {
+    "development": Development,
+    "production": Production,
+    "testing": Testing
+}

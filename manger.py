@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from redis import StrictRedis
 from flask_session import Session
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 
 class Config(object):
     SECRET_KEY = "asdadfafadfasdfa"
@@ -34,6 +36,13 @@ redis_store = StrictRedis(app)
 CSRFProtect(app)
 # 设置session保存的指定位置
 Session(app)
+# 设置manger管理对象
+manager = Manager(app)
+# 配置数据库迁移设置,关联app和db
+Migrate(app, db)
+# 将迁移命令添加到manager中
+manager.add_command("db", MigrateCommand)
+
 
 @app.route("/")
 def index():
@@ -42,5 +51,4 @@ def index():
 
 
 if __name__ == "__main__":
-
-    app.run()
+    manager.run()

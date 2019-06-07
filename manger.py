@@ -12,12 +12,5 @@ Migrate(app, db)
 manager.add_command("db", MigrateCommand)
 
 
-@app.route("/")
-def index():
-    print(11111)
-    session["age"] = "18"
-    return "hello world"
-
-
 if __name__ == "__main__":
     manager.run()

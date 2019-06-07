@@ -1,5 +1,5 @@
 from redis import StrictRedis
-
+import logging
 
 class Config(object):
     SECRET_KEY = "asdadfafadfasdfa"
@@ -23,17 +23,20 @@ class Config(object):
 class Development(Config):
     """开发环境下的配置"""
     DEBUG = True
+    LOG_LEVEL = logging.DEBUG
 
 
 class Production(Config):
     """z生产环境下的配置"""
     DEBUG = False
+    LOG_LEVEL = logging.ERROR
 
 
 class Testing(Config):
     """测试环境下的配置"""
     DEBUG = True
     TESTING = True
+    LOG_LEVEL = True
 
 
 config = {

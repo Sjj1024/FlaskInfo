@@ -28,6 +28,8 @@ db = SQLAlchemy()
 # 声明redis_store是一个实例对象
 redis_store = StrictRedis() # type:StrictRedis
 def create_app(config_name):
+    # 让log日志文件在创建app的时候就运行
+    set_log(config_name)
     app = Flask(__name__)
     # 添加配置文件
     app.config.from_object(config[config_name])

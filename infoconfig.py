@@ -3,7 +3,7 @@ import logging
 
 class Config(object):
     SECRET_KEY = "asdadfafadfasdfa"
-    SQLALCHEMY_DATABASE_URI = "mysql://root:mysql/127.0.0.1:3306/fnews"
+    SQLALCHEMY_DATABASE_URI = "mysql://root:mysql@127.0.0.1:3306/fnews"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # 配置redis的地址：
     REDIS_HOST = "127.0.0.1"

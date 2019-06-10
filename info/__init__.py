@@ -37,7 +37,7 @@ def create_app(config_name):
     db.init_app(app)
     # 配置redis 的存储位置
     global redis_store  # 声明redis_store为全局变量
-    redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT)
+    redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT, decode_responses=True)
     # 开启CSRF保护
     CSRFProtect(app)
     # 设置session保存的指定位置
@@ -46,4 +46,7 @@ def create_app(config_name):
     from info.modules.index import index_blu
     # 配置好这个app之后，就返回这个app
     app.register_blueprint(index_blu)
+    # 导入图片验证码蓝图路由
+    from info.modules.passport import pass_blue
+    app.register_blueprint(pass_blue)
     return app

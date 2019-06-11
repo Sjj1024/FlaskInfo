@@ -39,7 +39,7 @@ def create_app(config_name):
     global redis_store  # 声明redis_store为全局变量
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT, decode_responses=True)
     # 开启CSRF保护
-    CSRFProtect(app)
+    # CSRFProtect(app)
     # 设置session保存的指定位置
     Session(app)
     # 导入蓝图,然后和app关联，在使用的时候导入，就不会产生循环导入的问题了

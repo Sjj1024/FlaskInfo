@@ -165,18 +165,48 @@ function sendSMSCode() {
     if (!mobile) {
         $("#register-mobile-err").html("请填写正确的手机号！");
         $("#register-mobile-err").show();
-        $(".get_code").attr("onclick", "sendSMSCode();");
+        $(".get_code").attr("onclick", "sendSMSCode()");
         return;
     }
     var imageCode = $("#imagecode").val();
     if (!imageCode) {
         $("#image-code-err").html("请填写验证码！");
         $("#image-code-err").show();
-        $(".get_code").attr("onclick", "sendSMSCode();");
+        $(".get_code").attr("onclick", "sendSMSCode()");
         return;
     }
 
-    // TODO 发送短信验证码
+    //  发送短信验证码
+    var params = {
+        "mobile":mobile,
+        "imageCode":imageCode,
+        "imageCodeId":imageCodeId
+    };
+    // 发起注册请求
+    $.ajax({
+        url:"/sms_code",
+        type:"post",
+        data:JSON.stringify(params),
+        contentType:"application/json",
+        success:function (response) {
+            if(response.errno == "0"){
+                //代表发送短信成功,开始倒计时
+                var num = 60
+                var t = setInterval(function () {
+                    if (num == 1){
+                        $(".get_code").html("点击获取验证码")
+                        $(".get_code").attr("onclick", "sendSMSCode()");
+                    }else {
+                        num -= 1
+                        $(".get_code").html(num + "秒")
+                    }
+                }, 1000)
+            }else {
+                alert(response.errmsg)
+                $(".get_code").attr("onclick","sendSMSCode()")
+            }
+        }
+    })
 }
 
 // 调用该函数模拟点击左侧按钮

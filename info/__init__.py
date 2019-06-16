@@ -3,6 +3,7 @@ from flask import Flask
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import generate_csrf
 from redis import StrictRedis
 from infoconfig import config
 import logging
@@ -39,7 +40,14 @@ def create_app(config_name):
     global redis_store  # 声明redis_store为全局变量
     redis_store = StrictRedis(host=config[config_name].REDIS_HOST, port=config[config_name].REDIS_PORT, decode_responses=True)
     # 开启CSRF保护
-    # CSRFProtect(app)
+    @app.after_request
+    def after_request(response):
+        # 调用函数生成 csrf_token
+        csrf_token = generate_csrf()
+        # 通过 cookie 将值传给前端
+        response.set_cookie("csrf_token", csrf_token)
+        return response
+    CSRFProtect(app)
     # 设置session保存的指定位置
     Session(app)
     # 导入蓝图,然后和app关联，在使用的时候导入，就不会产生循环导入的问题了

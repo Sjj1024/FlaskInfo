@@ -103,7 +103,7 @@ $(function(){
             return;
         }
 
-        if (!passport) {
+        if (!password) {
             $("#login-password-err").show();
             return;
         }
@@ -116,6 +116,9 @@ $(function(){
         $.ajax({
             url: "/login",
             type: "post",
+            headers: {
+                "X-CSRFToken": getCookie('csrf_token')
+            },
             contentType: "application/json",
             data: JSON.stringify(params),
             success: function (resp) {
@@ -171,6 +174,9 @@ $(function(){
             $.ajax({
                 url: "/register",
                 type: "post",
+                headers: {
+                    "X-CSRFToken": getCookie('csrf_token')
+                },
                 contentType: "application/json",
                 data: JSON.stringify(params),
                 success: function (resp) {
@@ -227,6 +233,9 @@ function sendSMSCode() {
     $.ajax({
         url:"/sms_code",
         type:"post",
+        headers: {
+            "X-CSRFToken": getCookie('csrf_token')
+        },
         data:JSON.stringify(params),
         contentType:"application/json",
         success:function (response) {

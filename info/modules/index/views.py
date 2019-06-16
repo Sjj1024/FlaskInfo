@@ -1,11 +1,27 @@
-from flask import render_template, current_app, redirect
+from flask import render_template, current_app, redirect, session
+
+from info.models import User
 from . import index_blu
 from info import redis_store
 
 
 @index_blu.route("/")
 def index():
-    return render_template("news/index.html")
+    # 取到用户id
+    user_id = session.get("user_id", None)
+    user = None
+    if user_id:
+        # 尝试查询用户的模型
+        try:
+            user = User.query.get(user_id)
+        except Exception as e:
+            current_app.logger.error(e)
+
+    data = {
+        "user": user.to_dict() if user else None
+    }
+
+    return render_template('news/index.html', data=data)
 
 @index_blu.route("/favicon.ico")
 def favicon():

@@ -68,7 +68,7 @@ body{
     height:30px;
     overflow: hidden;
     margin-top:15px;
-    display:none;    
+    /*display:none;    */
 }
 
 .user_login img{

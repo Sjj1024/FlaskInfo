@@ -1,10 +1,9 @@
 $(function(){
-
 	// 打开登录框
 	$('.login_btn').click(function(){
         $('.login_form_con').show();
 	})
-	
+
 	// 点击关闭按钮关闭登录框或者注册框
 	$('.shutoff').click(function(){
 		$(this).closest('form').hide();
@@ -72,7 +71,7 @@ $(function(){
 	var sHash = window.location.hash;
 	if(sHash!=''){
 		var sId = sHash.substring(1);
-		var oNow = $('.'+sId);		
+		var oNow = $('.'+sId);
 		var iNowIndex = oNow.index();
 		$('.option_list li').eq(iNowIndex).addClass('active').siblings().removeClass('active');
 		oNow.show().siblings().hide();
@@ -93,7 +92,7 @@ $(function(){
 		$(this).find('a')[0].click()
 	})
 
-    // TODO 登录表单提交
+    // 登录表单提交
     $(".login_form_con").submit(function (e) {
         e.preventDefault()
         var mobile = $(".login_form #mobile").val()
@@ -104,12 +103,32 @@ $(function(){
             return;
         }
 
-        if (!password) {
+        if (!passport) {
             $("#login-password-err").show();
             return;
         }
 
         // 发起登录请求
+        var params = {
+            "mobile": mobile,
+            "password": password
+        };
+        $.ajax({
+            url: "/login",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(params),
+            success: function (resp) {
+                if (resp.errno == "0") {
+                    // 代表登录成功
+                    location.reload()
+                }else {
+                    alert(resp.errmsg)
+                    $("#login-password-err").html(resp.errmsg)
+                    $("#login-password-err").show()
+                }
+            }
+        })
     })
 
 

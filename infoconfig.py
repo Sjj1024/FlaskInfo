@@ -18,7 +18,8 @@ class Config(object):
     SESSION_PERMANENT = False
     # 这是过期时间
     PERMANENT_SESSION_LIFETIME = 86400 * 2
-
+    # 配置数据库自动提交配置
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
 class Development(Config):
     """开发环境下的配置"""

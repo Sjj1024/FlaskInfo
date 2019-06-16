@@ -12,6 +12,21 @@ from info.utils.response_code import RET
 from . import pass_blue
 
 
+@pass_blue.route('/logout')
+def logout():
+    """
+    退出登录
+    :return:
+    """
+    # pop是移除session中的数据(dict)
+    # pop 会有一个返回值，如果要移除的key不存在，就返回None
+    session.pop('user_id', None)
+    session.pop('mobile', None)
+    session.pop('nick_name', None)
+
+    return jsonify(errno=RET.OK, errmsg="退出成功")
+
+
 @pass_blue.route("/login", methods=["POST"])
 def login():
     """

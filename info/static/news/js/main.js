@@ -293,3 +293,8 @@ function generateUUID() {
     });
     return uuid;
 }
+function logout() {
+    $.get('/logout', function (resp) {
+        location.reload()
+    })
+}

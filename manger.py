@@ -8,7 +8,7 @@ app = create_app("development")
 manager = Manager(app)
 # 配置数据库迁移设置,关联app和db
 Migrate(app, db)
-# 将迁移命令添加到manager中，，
+# 将迁移命令添加到manager中
 manager.add_command("db", MigrateCommand)
 
 

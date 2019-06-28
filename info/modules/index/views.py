@@ -1,6 +1,7 @@
-from flask import render_template, current_app, redirect, session, jsonify, request
+from flask import render_template, current_app, redirect, session, jsonify, request, g
 
 from info.models import User, News, Category
+from info.utils.common import user_login_data
 from info.utils.response_code import RET
 from . import index_blu
 from info import redis_store, constants
@@ -57,16 +58,10 @@ def news_list():
     return jsonify(errno=RET.OK, errmsg="OK", data=data)
 
 @index_blu.route("/")
+@user_login_data
 def index():
     # 取到用户id
-    user_id = session.get("user_id", None)
-    user = None
-    if user_id:
-        # 尝试查询用户的模型
-        try:
-            user = User.query.get(user_id)
-        except Exception as e:
-            current_app.logger.error(e)
+    user = g.user
 
     # 右侧的新闻排行的逻辑
     news_list = []

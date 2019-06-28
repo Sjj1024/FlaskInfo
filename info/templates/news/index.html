@@ -90,12 +90,9 @@
                 <h3>点击排行</h3>
             </div>
             <ul class="rank_list">
-                <li><span class="first">1</span><a href="#">势如破竹！人民币再度连闯四道关口 在岸、离岸双双升破6.42</a></li>
-                <li><span class="second">2</span><a href="#">凛冬已至，还有多少银行人在假装干银行</a></li>
-                <li><span class="third">3</span><a href="#">人民日报：部分城市楼市放松限制引关注，楼市调控不会“拉抽屉”</a></li>
-                <li><span>4</span><a href="#">势如破竹！人民币再度连闯四道关口 在岸、离岸双双升破6.42</a></li>
-                <li><span>5</span><a href="#">凛冬已至，还有多少银行人在假装干银行</a></li>
-                <li><span>6</span><a href="#">人民日报：部分城市楼市放松限制引关注，楼市调控不会“拉抽屉”</a></li>
+                {% for news in data.news_dict_li %}
+                    <li><span>{{ loop.index }}</span><a href="#">{{ news.title }}</a></li>
+                {% endfor %}
             </ul>
         </div>
     </div>

@@ -60,4 +60,7 @@ def create_app(config_name):
     from info.utils.common import do_index_class
     # 添加自定义过滤器
     app.add_template_filter(do_index_class, "index_class")
+    # 注册新闻详情路由
+    from info.modules.news import news_blu
+    app.register_blueprint(news_blu)
     return app

@@ -57,4 +57,7 @@ def create_app(config_name):
     # 导入图片验证码蓝图路由
     from info.modules.passport import pass_blue
     app.register_blueprint(pass_blue)
+    from info.utils.common import do_index_class
+    # 添加自定义过滤器
+    app.add_template_filter(do_index_class, "index_class")
     return app

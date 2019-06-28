@@ -1,6 +1,6 @@
 from flask import render_template, current_app, redirect, session
 
-from info.models import User, News
+from info.models import User, News, Category
 from . import index_blu
 from info import redis_store, constants
 
@@ -30,9 +30,18 @@ def index():
     for news in news_list:
         news_dict_li.append(news.to_basic_dict())
 
+    # 查询分类数据，通过模板的形式渲染出来
+    categories = Category.query.all()
+
+    category_li = []
+
+    for category in categories:
+        category_li.append(category.to_dict())
+
     data = {
         "user": user.to_dict() if user else None,
-        "news_dict_li": news_dict_li
+        "news_dict_li": news_dict_li,
+        "category_li": category_li
     }
 
     return render_template('news/index.html', data=data)

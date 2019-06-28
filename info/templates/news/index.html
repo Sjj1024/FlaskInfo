@@ -14,12 +14,13 @@
         <div class="header">
             <a href="#" class="logo fl"><img src="../../static/news/images/logo.png" alt="logo"></a>
             <ul class="menu fl">
-                <li class="active" data-cid="0"><a href="javascript:;">最新</a></li>
-                <li data-cid="1"><a href="javascript:;">股市</a></li>
-                <li data-cid="2"><a href="javascript:;">债市</a></li>
-                <li data-cid="3"><a href="javascript:;">商品</a></li>
-                <li data-cid="4"><a href="javascript:;">外汇</a></li>
-                <li data-cid="5"><a href="javascript:;">公司</a></li>
+                 {% for category in data.category_li %}
+                    {% if loop.index == 1 %}
+                        <li data-cid="{{ category.id }}" class="active"><a href="javascript:;">{{ category.name }}</a></li>
+                    {% else %}
+                        <li data-cid="{{ category.id }}"><a href="javascript:;">{{ category.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
             </ul>
             {% if data.user %}
             <!-- 用户登录后显示下面，隐藏上面 -->

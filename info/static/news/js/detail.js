@@ -130,6 +130,8 @@ $(function(){
                     $('.comment_sub').blur();
                     // 清空输入框内容
                     $(".comment_input").val("")
+                    // 刷新评论条数
+                    updateCommentCount()
                 }else {
                     alert(resp.errmsg)
                 }
@@ -179,3 +181,10 @@ $(function(){
 
     })
 })
+
+
+// 更新评论条数
+function updateCommentCount() {
+    var count = $(".comment_list").length
+    $(".comment_count").html(count+"条评论")
+}

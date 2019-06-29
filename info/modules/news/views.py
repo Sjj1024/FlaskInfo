@@ -1,10 +1,76 @@
 from flask import render_template, current_app, session, g, abort, jsonify, request
 
 from info import constants, db
-from info.models import User, News, Comment
+from info.models import User, News, Comment, CommentLike
 from info.utils.common import user_login_data
 from info.utils.response_code import RET
 from . import news_blu
+
+
+@news_blu.route('/comment_like', methods=["POST"])
+@user_login_data
+def comment_like():
+    """
+    评论点赞
+    :return:
+    """
+    user = g.user
+    if not user:
+        return jsonify(errno=RET.SESSIONERR, errmsg="用户未登录")
+
+    # 1. 取到请求参数
+    comment_id = request.json.get("comment_id")
+    action = request.json.get("action")
+
+    # 2. 判断参数
+    if not all([comment_id, action]):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
+
+    if action not in ["add", "remove"]:
+        return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
+
+    try:
+        comment_id = int(comment_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
+
+    # 3. 获取到要被点赞的评论模型
+    try:
+        comment = Comment.query.get(comment_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="数据查询错误")
+
+    if not comment:
+        return jsonify(errno=RET.NODATA, errmsg="评论不存在")
+
+    if action == "add":
+        comment_like_model = CommentLike.query.filter(CommentLike.user_id == user.id,
+                                                      CommentLike.comment_id == comment.id).first()
+        if not comment_like_model:
+            # 点赞评论
+            comment_like_model = CommentLike()
+            comment_like_model.user_id = user.id
+            comment_like_model.comment_id = comment.id
+            db.session.add(comment_like_model)
+            comment.like_count += 1
+    else:
+        # 取消点赞评论
+        comment_like_model = CommentLike.query.filter(CommentLike.user_id == user.id,
+                                                      CommentLike.comment_id == comment.id).first()
+        if comment_like_model:
+            db.session.delete(comment_like_model)
+            comment.like_count -= 1
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="数据库操作失败")
+
+    return jsonify(errno=RET.OK, errmsg="OK")
 
 
 @news_blu.route('/news_comment', methods=["POST"])
@@ -176,10 +242,28 @@ def news_detail(news_id):
     except Exception as e:
         current_app.logger.error(e)
 
-    comment_dict_li = []
+    comment_like_ids = []
+    if g.user:
+        try:
+            # 需求：查询当前用户在当前新闻里面都点赞了哪些评论
+            # 1. 查询出当前新闻的所有评论 ([COMMENT]) 取到所有的评论id  [1, 2, 3, 4, 5]
+            comment_ids = [comment.id for comment in comments]
+            # 2. 再查询当前评论中哪些评论被当前用户所点赞 （[CommentLike]）查询comment_id 在第1步的评论id列表内的所有数据 & CommentList.user_id = g.user.id
+            comment_likes = CommentLike.query.filter(CommentLike.comment_id.in_(comment_ids),
+                                                     CommentLike.user_id == g.user.id).all()
+            # 3. 取到所有被点赞的评论id 第2步查询出来是一个 [CommentLike] --> [3, 5]
+            comment_like_ids = [comment_like.comment_id for comment_like in comment_likes]  # [3, 5]
+        except Exception as e:
+            current_app.logger.error(e)
 
+    comment_dict_li = []
     for comment in comments:
         comment_dict = comment.to_dict()
+        # 代表没有点赞
+        comment_dict["is_like"] = False
+        # 判断当前遍历到的评论是否被当前登录用户所点赞
+        if comment.id in comment_like_ids:
+            comment_dict["is_like"] = True
         comment_dict_li.append(comment_dict)
 
     data = {

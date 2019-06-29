@@ -29,8 +29,8 @@
             {% if data.user %}
                 <!-- 用户登录后显示下面，隐藏上面 -->
                 <div class="user_login fr">
-                    <img src="{% if data.user.avatar_url %} data.user_info.avatar_url {% else %}../../static/news/images/person01.png{% endif %}" class="lgin_pic">
-                    <a href="#">{{ data.user.nick_name }}</a>
+                    <img src="{% if data.user.avatar_url %} {{ data.user.avatar_url }} {% else %}../../static/news/images/person01.png{% endif %}" class="lgin_pic">
+                    <a href="/user/info" id="nick_name">{{ data.user.nick_name }}</a>
                     <a href="javascript:;" onclick="logout()">退出</a>
                 </div>
             {% else %}

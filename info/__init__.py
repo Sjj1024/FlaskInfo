@@ -63,4 +63,7 @@ def create_app(config_name):
     # 注册新闻详情路由
     from info.modules.news import news_blu
     app.register_blueprint(news_blu)
+    # 注册个人中心蓝图
+    from info.modules.profile import profile_blu
+    app.register_blueprint(profile_blu)
     return app
